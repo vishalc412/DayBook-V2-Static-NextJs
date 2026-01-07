@@ -1,0 +1,220 @@
+openapi: 3.0.3
+info:
+  title: DayBook API
+  description: API for the DayBook Accounting Management System.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000/api
+    description: Development server
+paths:
+  /dashboard/stats:
+    get:
+      summary: Get dashboard statistics
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStats'
+  /dashboard/monthly:
+    get:
+      summary: Get monthly financial data for charts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MonthlyData'
+  /accounts:
+    get:
+      summary: List all accounts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+  /transactions:
+    get:
+      summary: List all transactions
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+  /journal:
+    get:
+      summary: List all journal entries
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JournalEntry'
+  /audit-logs:
+    get:
+      summary: List all audit logs
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+  /users:
+    get:
+      summary: List all users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    DashboardStats:
+      type: object
+      properties:
+        totalAssets:
+          type: number
+        totalLiabilities:
+          type: number
+        totalRevenue:
+          type: number
+        totalExpenses:
+          type: number
+        netIncome:
+          type: number
+        totalTransactions:
+          type: integer
+        postedTransactions:
+          type: integer
+        pendingTransactions:
+          type: integer
+    MonthlyData:
+      type: object
+      properties:
+        month:
+          type: string
+        revenue:
+          type: number
+        expenses:
+          type: number
+        netIncome:
+          type: number
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+        accountType:
+          type: string
+          enum: [Asset, Liability, Equity, Revenue, Expense]
+        parentId:
+          type: integer
+          nullable: true
+        description:
+          type: string
+        balance:
+          type: number
+        createdAt:
+          type: string
+          format: date
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        transactionDate:
+          type: string
+          format: date
+        referenceNumber:
+          type: string
+        description:
+          type: string
+        totalAmount:
+          type: number
+        isPosted:
+          type: boolean
+        createdBy:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+    JournalEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        transactionId:
+          type: integer
+        accountId:
+          type: integer
+        accountName:
+          type: string
+        debit:
+          type: number
+        credit:
+          type: number
+        description:
+          type: string
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+        userId:
+          type: integer
+        username:
+          type: string
+        action:
+          type: string
+        entityType:
+          type: string
+        entityId:
+          type: integer
+        details:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
